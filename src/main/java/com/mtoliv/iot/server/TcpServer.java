@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 /**
@@ -53,8 +54,14 @@ public class TcpServer {
     private static final int BIZ_GROUP_SIZE = Runtime.getRuntime().availableProcessors() * 2;
     private static final int BIZ_THREAD_SIZE = 4;
 
-    //private final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZ_GROUP_SIZE);
-    //private final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZ_THREAD_SIZE);
+    private ChannelFuture serverFuter ;
+
+    public ChannelFuture getServerFuter() {
+        return serverFuter;
+    }
+
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZ_GROUP_SIZE);
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZ_THREAD_SIZE);
 
     @PostConstruct
     public void init() throws Exception {
@@ -63,49 +70,37 @@ public class TcpServer {
         port = env.getRequiredProperty(PROPERT_server_listen_port, Integer.class) ;
 
         // construct boss and worker threads (num threads = number of cores)
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        //EventLoopGroup bossGroup = new NioEventLoopGroup();
+        //EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.option(ChannelOption.SO_BACKLOG, 100);
-        bootstrap.option(ChannelOption.TCP_NODELAY, true);
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-        // b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR);
         bootstrap.channel(NioServerSocketChannel.class);
         bootstrap.childHandler(new TcpServerCodecInitializer(serverConfig));
 
-        try {
-            logger.info("start server at port[" + port + "].");
-            ChannelFuture future = bootstrap.bind(port).sync();
-            ChannelFuture channelFuture = future.addListener(new ChannelFutureListener() {
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (future.isSuccess()) {
-                        logger.info("Server have success bind to " + port);
-                    } else {
-                        logger.error("Server fail bind to " + port);
-                        throw new InitErrorException("Server start fail !", future.cause());
-                    }
+        logger.info("start server at port[" + port + "].");
+        serverFuter = bootstrap.bind(port).sync();
+        ChannelFuture channelFuture = serverFuter.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()) {
+                    logger.info("Server have success bind to " + port);
+                } else {
+                    logger.error("Server fail bind to " + port);
+                    throw new InitErrorException("Server start fail !", future.cause());
                 }
-            });
-
-            // block until the server socket is closed.
-            future.channel().closeFuture().sync();
-        } finally {
-            // Shut down all event loops to terminate all threads.
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
+            }
+        });
     }
 
-//    @PreDestroy
-//    public void shutdown() {
-//        logger.info("shutdown server ...");
-//        bossGroup.shutdownGracefully();
-//        workerGroup.shutdownGracefully();
-//        logger.info("shutdown server end.");
-//    }
-//
+    @PreDestroy
+    public void shutdown() {
+        logger.info("shutdown server ...");
+        bossGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
+        logger.info("shutdown server end.");
+    }
+
     public void setServerConfig(ServerTransportConfig serverConfig) {
         this.serverConfig = serverConfig;
     }

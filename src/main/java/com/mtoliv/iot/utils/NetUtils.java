@@ -1,17 +1,11 @@
 package com.mtoliv.iot.utils;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class NetUtils {
 
@@ -30,11 +24,11 @@ public class NetUtils {
     }
 
     public static String getChannelSessionHook(ChannelHandlerContext ctx) {
-        return ctx.channel().attr(Constants.SERVER_SESSION_HOOK).get();
+        return ctx.channel().attr(Constants.ATTR_SERVER_SESSION).get();
     }
 
     public static void setChannelSessionHook(ChannelHandlerContext ctx, String sessionId) {
-        ctx.channel().attr(Constants.SERVER_SESSION_HOOK).set(sessionId);
+        ctx.channel().attr(Constants.ATTR_SERVER_SESSION).set(sessionId);
     }
 
     public static String toAddressString(InetSocketAddress address) {

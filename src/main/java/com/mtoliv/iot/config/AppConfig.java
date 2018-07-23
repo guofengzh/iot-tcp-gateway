@@ -40,7 +40,7 @@ public class AppConfig {
 	public TcpReader tcpReader() {
 		return new TcpReader() {
 			@Override
-			public Object read(Session session, Object msg) {
+			public Object readerCallback(Session session, Object msg) {
 				System.out.println("Got it") ;
 				return null;
 			}

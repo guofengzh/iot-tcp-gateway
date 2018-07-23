@@ -9,11 +9,13 @@ import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 @ChannelHandler.Sharable
 public class ServerMessageHandler extends ChannelInboundHandlerAdapter {
 
     private final static Logger logger = LoggerFactory.getLogger(ServerMessageHandler.class);
-    public static final AttributeKey<String> SERVER_SESSION_HOOK = AttributeKey.valueOf("SERVER_SESSION_HOOK");
+    public static final AttributeKey<String> SERVER_SESSION_HOOK = AttributeKey.valueOf("ATTR_SERVER_SESSION");
 
     private SessionManager sessionManager ;
     private TcpReader proxy = null;
@@ -32,11 +34,7 @@ public class ServerMessageHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 处理一条解析好的协议 - 这里可能会有ping时所获取的设备版本号的响应消息, proxy需要处理吗?
         Session session = sessionManager.getSession(ctx) ;
-        // TODO: how we do it
-        // 我们将它们放到一个消息Queue中
-        Object response = proxy.read(session, msg);
-        if ( response != null ) {
-            session.send(response);
-        }
+        Optional<Object> response = proxy.readerCallback(session, msg);
+        response.ifPresent(resp-> session.send(response));
     }
 }
