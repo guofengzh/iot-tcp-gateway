@@ -19,4 +19,12 @@ public class RequestMesage {
     public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
     }
+
+    @Override
+    public String toString() {
+        return "RequestMesage{" +
+                "intValue=" + intValue +
+                ", stringValue='" + stringValue + '\'' +
+                '}';
+    }
 }

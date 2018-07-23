@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -28,6 +29,7 @@ public class AppConfig {
 		SessionManager sessionManager = new SessionManager() ;
 		List<SessionListener> listeners = new ArrayList<>() ;
 		listeners.add(new LogSessionListener()) ;
+		sessionManager.setSessionListeners(listeners);
 		return sessionManager ;
 	}
 
@@ -40,9 +42,9 @@ public class AppConfig {
 	public TcpReader tcpReader() {
 		return new TcpReader() {
 			@Override
-			public Object readerCallback(Session session, Object msg) {
-				System.out.println("Got it") ;
-				return null;
+			public Optional<Object> readerCallback(Session session, Object msg) {
+				System.out.println("Got it:" + msg) ;
+				return Optional.empty();
 			}
 		} ;
 	}
