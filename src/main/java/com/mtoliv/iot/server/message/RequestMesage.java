@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.message;
 
-public class RequestData {
+public class RequestMesage {
     private int intValue;
     private String stringValue;
 

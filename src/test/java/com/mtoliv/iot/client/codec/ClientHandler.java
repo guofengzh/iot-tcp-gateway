@@ -1,7 +1,7 @@
 package com.mtoliv.iot.client.codec;
 
-import com.mtoliv.iot.server.message.RequestData;
-import com.mtoliv.iot.server.message.ResponseData;
+import com.mtoliv.iot.server.message.RequestMesage;
+import com.mtoliv.iot.server.message.ResponseMessage;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -12,7 +12,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx)
             throws Exception {
 
-        RequestData msg = new RequestData();
+        RequestMesage msg = new RequestMesage();
         msg.setIntValue(123);
         msg.setStringValue(
                 "all work and no play makes jack a dull boy");
@@ -22,7 +22,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        System.out.println((ResponseData)msg);
+        System.out.println((ResponseMessage)msg);
         ctx.close();
     }
 }

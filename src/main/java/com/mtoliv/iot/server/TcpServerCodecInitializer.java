@@ -1,9 +1,9 @@
 package com.mtoliv.iot.server;
 
-import com.mtoliv.iot.server.codec.RequestDecoder;
-import com.mtoliv.iot.server.codec.ResponseDataEncoder;
-import com.mtoliv.iot.server.codec.SessionActivationHandler;
-import com.mtoliv.iot.server.codec.ServerMessageHandler;
+import com.mtoliv.iot.server.codec.RequestMessageDecoder;
+import com.mtoliv.iot.server.codec.ResponseMessageEncoder;
+import com.mtoliv.iot.server.codec.SessionStateHandler;
+import com.mtoliv.iot.server.codec.RequstMessageHandler;
 import com.mtoliv.iot.server.codec.IdleServerHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -37,9 +37,9 @@ import java.util.concurrent.TimeUnit;
 @ChannelHandler.Sharable
 public class TcpServerCodecInitializer extends ChannelInitializer<SocketChannel> {
 
-    private ServerTransportConfig config;
+    private TcpServerTransportConfig config;
 
-    public TcpServerCodecInitializer(ServerTransportConfig config) {
+    public TcpServerCodecInitializer(TcpServerTransportConfig config) {
         this.config = config;
     }
 
@@ -48,10 +48,10 @@ public class TcpServerCodecInitializer extends ChannelInitializer<SocketChannel>
         ChannelPipeline pipeline = socketChannel.pipeline();
         // IdleStateHandler should always be the first handler in your pipeline.
         pipeline.addLast("idleStateHandler", new IdleStateHandler(6, 3, 0, TimeUnit.SECONDS));
-        pipeline.addLast("requestDecoder", new RequestDecoder());
-        pipeline.addLast("responseDecoder", new ResponseDataEncoder());
+        pipeline.addLast("requestDecoder", new RequestMessageDecoder());
+        pipeline.addLast("responseDecoder", new ResponseMessageEncoder());
         pipeline.addLast("idleServerHandler", new IdleServerHandler());
-        pipeline.addLast("sessionActivationHandler", new SessionActivationHandler(config));
-        pipeline.addLast("messageHandler", new ServerMessageHandler(config));
+        pipeline.addLast("sessionActivationHandler", new SessionStateHandler(config));
+        pipeline.addLast("messageHandler", new RequstMessageHandler(config));
     }
 }

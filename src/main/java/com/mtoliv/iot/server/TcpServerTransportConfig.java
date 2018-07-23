@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServerTransportConfig {
+public class TcpServerTransportConfig {
 
     @Autowired
     private SessionManager sessionManager = null;

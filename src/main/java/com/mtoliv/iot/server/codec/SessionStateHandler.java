@@ -1,18 +1,17 @@
 package com.mtoliv.iot.server.codec;
 
-import com.mtoliv.iot.server.ServerTransportConfig;
+import com.mtoliv.iot.server.TcpServerTransportConfig;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
-import com.mtoliv.iot.server.session.listener.SessionListener;
 import com.mtoliv.iot.utils.NetUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class SessionActivationHandler extends ChannelInboundHandlerAdapter {
+public class SessionStateHandler extends ChannelInboundHandlerAdapter {
 
     private SessionManager sessionManager ;
 
-    public SessionActivationHandler(ServerTransportConfig config) {
+    public SessionStateHandler(TcpServerTransportConfig config) {
         this.sessionManager = config.getSessionManager() ;
     }
 

@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.message;
 
-public class ResponseData {
+public class ResponseMessage {
     private int intValue;
 
     public int getIntValue() {

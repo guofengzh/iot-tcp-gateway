@@ -44,7 +44,7 @@ public class TcpServer {
     private final static String PROPERT_server_listen_port = "server.listen.port" ;
 
     @Autowired
-    private ServerTransportConfig serverConfig;
+    private TcpServerTransportConfig serverConfig;
 
     @Resource
     private Environment env;
@@ -101,7 +101,7 @@ public class TcpServer {
         logger.info("shutdown server end.");
     }
 
-    public void setServerConfig(ServerTransportConfig serverConfig) {
+    public void setServerConfig(TcpServerTransportConfig serverConfig) {
         this.serverConfig = serverConfig;
     }
 
