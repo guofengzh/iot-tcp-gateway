@@ -1,6 +1,8 @@
 package com.mtoliv.iot.config;
 
+import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.api.TcpWirter;
+import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
 import com.mtoliv.iot.server.session.listener.SessionListener;
@@ -32,5 +34,16 @@ public class AppConfig {
 	@Bean
 	public TcpWirter tcpWirter() {
 		return new TcpWirter() ;
+	}
+
+	@Bean
+	public TcpReader tcpReader() {
+		return new TcpReader() {
+			@Override
+			public Object read(Session session, Object msg) {
+				System.out.println("Got it") ;
+				return null;
+			}
+		} ;
 	}
 }
