@@ -2,6 +2,7 @@ package com.mtoliv.iot.config;
 
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.api.TcpWirter;
+import com.mtoliv.iot.server.message.ResponseMessage;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
@@ -44,7 +45,10 @@ public class AppConfig {
 			@Override
 			public Optional<Object> readerCallback(Session session, Object msg) {
 				System.out.println("Got it:" + msg) ;
-				return Optional.empty();
+				//return Optional.empty();
+                ResponseMessage responseMessage = new ResponseMessage() ;
+                responseMessage.setIntValue(200);
+                return Optional.of(responseMessage) ;
 			}
 		} ;
 	}

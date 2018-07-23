@@ -2,6 +2,7 @@ package com.mtoliv.iot.server.codec;
 
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.TcpServerTransportConfig;
+import com.mtoliv.iot.server.api.TcpWirter;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import io.netty.channel.*;
@@ -22,11 +23,11 @@ public class RequstMessageHandler extends ChannelInboundHandlerAdapter {
     public static final AttributeKey<String> SERVER_SESSION_HOOK = AttributeKey.valueOf("ATTR_SERVER_SESSION");
 
     private SessionManager sessionManager ;
-    private TcpReader proxy = null;
+    private TcpReader reader = null;
 
     public RequstMessageHandler(TcpServerTransportConfig config) {
         this.sessionManager = config.getSessionManager() ;
-        this.proxy = config.getProxy();
+        this.reader = config.getReader();
     }
 
     /**
@@ -39,8 +40,8 @@ public class RequstMessageHandler extends ChannelInboundHandlerAdapter {
         // msg是解码之后的SocketMsg
         // SocketMsg socketMsg = (SocketMsg)msg ;
         Session session = sessionManager.getSession(ctx) ;
-        Optional<Object> response = proxy.readerCallback(session, msg);
-        response.ifPresent(resp-> session.send(response));
+        Optional<Object> response = reader.readerCallback(session, msg);
+        response.ifPresent(resp-> session.send(resp));
     }
 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

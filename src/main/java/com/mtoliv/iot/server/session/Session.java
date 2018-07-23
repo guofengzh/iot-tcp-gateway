@@ -62,7 +62,7 @@ public class Session {
         if (!isValid()) {
             stage.completeExceptionally(new SessionInvalidException(this.sessionId));
         } else {
-            ChannelFuture future = ctx.channel().write(response).addListener(new ChannelFutureListener() {
+            ChannelFuture future = ctx.channel().writeAndFlush(response).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) {
                     if (future.isSuccess()) {

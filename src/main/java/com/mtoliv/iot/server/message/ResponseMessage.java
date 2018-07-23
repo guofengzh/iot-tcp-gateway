@@ -10,4 +10,11 @@ public class ResponseMessage {
     public void setIntValue(int intValue) {
         this.intValue = intValue;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseMessage{" +
+                "intValue=" + intValue +
+                '}';
+    }
 }
