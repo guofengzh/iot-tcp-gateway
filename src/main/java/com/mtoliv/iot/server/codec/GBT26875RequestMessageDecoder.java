@@ -17,7 +17,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         // 低字节先传输。
         GBT26875RequesMessage message = new GBT26875RequesMessage() ;
         // 启动符‘@@’,(2字节)，固定值64，64
-        int hd = in.readShortLE() ;
+        int hd = in.readUnsignedShortLE() ;
         if (hd != ( 64 << 8 ) + 64 ) {
             // 这个包不对，忽略所有的字节
             int length = in.readableBytes();
@@ -29,10 +29,10 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         }
 
         // 业务流水号, (2字节)
-        message.setSeqNo(in.readShortLE()) ;
+        message.setSeqNo(in.readUnsignedShortLE()) ;
 
         // 协议版本,(2字节)
-        message.setVersion(in.readShortLE()) ;
+        message.setVersion(in.readUnsignedShortLE()) ;
 
         // 时间标签, (6字节)
         message.setTime(get6ByteLong(in)) ;
@@ -44,7 +44,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         message.setDestAddr(get6ByteLong(in)) ;
 
         // 应用数据单元长,(2字节)
-        message.setDataLen(in.readShortLE()) ;
+        message.setDataLen(in.readUnsignedShortLE()) ;
 
         // 命令字节, (1字节)
         message.setCmd(in.readByte()) ;
@@ -59,7 +59,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         message.setCrc(in.readByte()) ;
 
         // 结束符‘##，(2字节), 固定值35，35
-        int endSign = in.readShortLE() ;
+        int endSign = in.readUnsignedShortLE() ;
         if (endSign != (35 << 8 ) + 35) {
             // 包的结尾不对。错误处理
         }
@@ -70,8 +70,10 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
     }
 
     private static long get6ByteLong(ByteBuf in) {
-        long lowend = 0x0000FFFFL & in.readShortLE() ;
-        long highend = 0x00FFL & in.readByte() ;
-        return (highend << 16) | lowend ;
+        long lowend = in.readUnsignedIntLE() ;
+        Long.toHexString(lowend) ;
+        long highend = in.readUnsignedShortLE() ;
+        Long.toHexString(highend) ;
+        return (highend << 32) | lowend ;
     }
 }
