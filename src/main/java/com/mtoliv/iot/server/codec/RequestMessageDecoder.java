@@ -52,7 +52,8 @@ public class RequestMessageDecoder extends ReplayingDecoder<RequestMesage> {
 
         // 应用数据单元,(最大1 024字节)
         ByteBuf dataBuf = in.readBytes(dataLen) ;
-        byte[] data = dataBuf.array() ;
+        byte[] data = new byte[dataBuf.readableBytes()];
+        buf.readBytes(data);
         dataBuf.release() ;
         // 校验, (1字节)
         byte crc = in.readByte() ;
