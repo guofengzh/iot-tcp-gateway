@@ -34,8 +34,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             (byte)0xdd, // dest addr
             (byte)0xdd,
             (byte)0xdd,
-            (byte)0,       // data len
-            (byte)5,
+            (byte)5,       // data len
+            (byte)0,
             (byte)0x01,    // cmd
             (byte)0xf1,    // data
             (byte)0xf2,

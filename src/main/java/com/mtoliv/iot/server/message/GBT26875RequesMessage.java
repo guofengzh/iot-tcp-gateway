@@ -1,8 +1,10 @@
 package com.mtoliv.iot.server.message;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
+import java.nio.ByteOrder;
 
 public class GBT26875RequesMessage implements Serializable {
 
@@ -94,9 +96,10 @@ public class GBT26875RequesMessage implements Serializable {
     }
 
     public static GBT26875RequesMessage fromByteBuf(ByteBuf in) {
+	    // 低字节先传输。
         GBT26875RequesMessage message = new GBT26875RequesMessage() ;
       // 启动符‘@@’,(2字节)，固定值64，64
-        int hd = in.readShort() ;
+        int hd = in.readShortLE() ;
         int t = 64 * 256 + 64 ;
         if (hd != 64 * 256 + 64) {
             in.clear();      // 错误处理 - 因为是变长报文，后面的报文没法处理了，所以，清空
@@ -111,10 +114,10 @@ public class GBT26875RequesMessage implements Serializable {
         }
 
         // 业务流水号, (2字节)
-        message.setSeqNo(in.readShort()) ;
+        message.setSeqNo(in.readShortLE()) ;
 
         // 协议版本,(2字节)
-        message.setVersion(in.readShort()) ;
+        message.setVersion(in.readShortLE()) ;
 
         // 时间标签, (6字节)
         message.setTime(get6ByteLong(in)) ;
@@ -126,7 +129,7 @@ public class GBT26875RequesMessage implements Serializable {
         message.setDestAddr(get6ByteLong(in)) ;
 
         // 应用数据单元长,(2字节)
-        message.setDataLen(in.readShort()) ;
+        message.setDataLen(in.readShortLE()) ;
 
         // 命令字节, (1字节)
         message.setCmd(in.readByte()) ;
@@ -141,7 +144,7 @@ public class GBT26875RequesMessage implements Serializable {
         message.setCrc(in.readByte()) ;
 
         // 结束符‘##，(2字节), 固定值35，35
-        int endSign = in.readShort() ;
+        int endSign = in.readShortLE() ;
         if (endSign != 35 * 256 + 35) {
             // 错误处理
             return null ;
@@ -154,11 +157,20 @@ public class GBT26875RequesMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "GBT26875RequesMessage{} time:" + Long.toHexString(time);
+        return "GBT26875RequesMessage:" +
+                " seqNo:" + Long.toHexString(seqNo) +
+                " version:" + Long.toHexString(version) +
+                " time:" + Long.toHexString(time) +
+                " sourceAddr:" + Long.toHexString(sourceAddr) +
+                " destAddr:" + Long.toHexString(destAddr) +
+                " dataLen:" + Long.toHexString(dataLen) +
+                " cmd:" + Long.toHexString(cmd) +
+                " data:" + Hex.encodeHexString( data ) +
+                " crc: " + Long.toHexString(crc);
     }
 
     private static long get6ByteLong(ByteBuf in) {
-        long lowend = 0x0000FFFF & in.readShort() ;
+        long lowend = 0x0000FFFF & in.readShortLE() ;
         long highend = 0x00FFL & in.readByte() ;
         return (highend << 16) | lowend ;
     }
