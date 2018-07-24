@@ -2,12 +2,16 @@ package com.mtoliv.iot.server.session;
 
 import com.mtoliv.iot.server.session.listener.SessionEvent;
 import com.mtoliv.iot.server.session.listener.SessionListener;
+import com.mtoliv.iot.utils.Constants;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import com.mtoliv.iot.utils.NetUtils;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -19,11 +23,19 @@ public class SessionManager {
 
     private final static Logger logger = LoggerFactory.getLogger(SessionManager.class);
 
-    private int maxInactiveInterval = 5 * 60;
+    @Resource
+    private Environment env;
+
+    private int maxInactiveInterval ;
 
     protected Map<String, Session> sessions = new ConcurrentHashMap<String, Session>();
 
     public SessionManager() {
+    }
+
+    @PostConstruct
+    public void init() {
+        maxInactiveInterval = env.getRequiredProperty(Constants.PROPERT_session_expiration_second, Integer.class) ;
     }
 
     protected List<SessionListener> sessionListeners = null;

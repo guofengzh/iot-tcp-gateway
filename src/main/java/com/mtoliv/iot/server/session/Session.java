@@ -42,7 +42,7 @@ public class Session {
      * container may invalidate this session. A negative time indicates that the
      * session should never time out.
      */
-    protected int maxInactiveInterval = 5 * 60;
+    protected int maxInactiveInterval ;
 
     private transient List<SessionListener> listeners = new CopyOnWriteArrayList<SessionListener>();
 

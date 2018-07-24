@@ -1,7 +1,9 @@
 package com.mtoliv.iot.server;
 
+import com.mtoliv.iot.utils.Constants;
 import com.mtoliv.iot.utils.InitErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import io.netty.bootstrap.ServerBootstrap;
@@ -41,8 +43,6 @@ public class TcpServer {
 
     private final static Logger logger = LoggerFactory.getLogger(TcpServer.class);
 
-    private final static String PROPERT_server_listen_port = "server.listen.port" ;
-
     @Autowired
     private TcpServerTransportConfig serverConfig;
 
@@ -67,7 +67,7 @@ public class TcpServer {
     public void init() throws Exception {
         logger.info("start server ...");
 
-        port = env.getRequiredProperty(PROPERT_server_listen_port, Integer.class) ;
+        port = env.getRequiredProperty(Constants.PROPERT_server_listen_port, Integer.class) ;
 
         // construct boss and worker threads (num threads = number of cores)
         //EventLoopGroup bossGroup = new NioEventLoopGroup();
