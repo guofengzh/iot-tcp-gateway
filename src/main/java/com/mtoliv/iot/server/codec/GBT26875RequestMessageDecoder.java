@@ -71,7 +71,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
     }
 
     private static long get6ByteLong(ByteBuf in) {
-        long lowend = 0x0000FFFF & in.readShortLE() ;
+        long lowend = 0x0000FFFFL & in.readShortLE() ;
         long highend = 0x00FFL & in.readByte() ;
         return (highend << 16) | lowend ;
     }
