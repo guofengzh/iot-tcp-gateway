@@ -21,7 +21,7 @@ public class RequestMessageDecoder extends ReplayingDecoder<RequestMesage> {
         int strLen = in.readInt();
         msg.setStringValue(in.readCharSequence(strLen, charset).toString());
         out.add(msg);
-        
+
 /*
         // 启动符‘@@’,(2字节)，固定值64，64
         if (in.readInt() != 64 * 100 + 64) {
