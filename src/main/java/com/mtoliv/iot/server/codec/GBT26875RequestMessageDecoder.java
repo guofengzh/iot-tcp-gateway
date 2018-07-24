@@ -55,7 +55,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         dataBuf.readBytes(bytes) ;
         message.setData(bytes) ;
         dataBuf.release() ;
-        // 校验, (1字节)
+        // 校验和, (1字节)
         message.setCrc(in.readByte()) ;
 
         // 结束符‘##，(2字节), 固定值35，35
@@ -64,8 +64,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
             // 包的结尾不对。错误处理
         }
 
-        // 在这里做校验和处理，保持in不变。in中如果还有内容，它是后续报文的内容
-        // 如果没有错误，加入到out中。
+        // 在这里做校验和处理 - IP包有数据包的校验和处理(确保传输中数据包不损坏)，所以，这里校验和处理没有意义，可以不做。
         out.add(message) ;
     }
 

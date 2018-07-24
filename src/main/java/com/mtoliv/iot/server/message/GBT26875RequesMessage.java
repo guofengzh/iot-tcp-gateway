@@ -98,14 +98,14 @@ public class GBT26875RequesMessage implements Serializable {
     @Override
     public String toString() {
         return "GBT26875RequesMessage:" +
-                " seqNo:" + Long.toHexString(seqNo) +
-                " version:" + Long.toHexString(version) +
+                " seqNo:" + Integer.toHexString(seqNo) +
+                " version:" + Integer.toHexString(version) +
                 " time:" + Long.toHexString(time) +
                 " sourceAddr:" + Long.toHexString(sourceAddr) +
                 " destAddr:" + Long.toHexString(destAddr) +
-                " dataLen:" + Long.toHexString(dataLen) +
-                " cmd:" + Long.toHexString(cmd) +
+                " dataLen:" + Integer.toHexString(dataLen) +
+                " cmd:" + Integer.toHexString(cmd) +
                 " data:" + Hex.encodeHexString( data ) +
-                " crc: " + Long.toHexString(crc);
+                " crc: " + Hex.encodeHexString(new byte[]{crc});
     }
 }
