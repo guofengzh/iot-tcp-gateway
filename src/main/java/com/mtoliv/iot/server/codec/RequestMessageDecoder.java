@@ -21,10 +21,11 @@ public class RequestMessageDecoder extends ReplayingDecoder<RequestMesage> {
         int strLen = in.readInt();
         msg.setStringValue(in.readCharSequence(strLen, charset).toString());
         out.add(msg);
+        
 /*
-        // 启动符‘@@’,(2字节)
-        if (in.readInt() != 0x4040) {
-            in.clear();
+        // 启动符‘@@’,(2字节)，固定值64，64
+        if (in.readInt() != 64 * 100 + 64) {
+            in.clear(); // 错误处理
             return ;
         }
 
@@ -56,10 +57,13 @@ public class RequestMessageDecoder extends ReplayingDecoder<RequestMesage> {
         // 校验, (1字节)
         byte crc = in.readByte() ;
 
-        // 结束符‘##，(2字节)
+        // 做校验，如果不对 in.clear(), 返回
+
+        // 结束符‘##，(2字节), 固定值35，35
         int endSign = in.readInt() ;
-        if (endSign != 0x2323) {
-            in.clear() ;
+        if (endSign != 35 * 100 + 35) {
+            in.clear() ;  // 错误处理
+            return ;
         } else {
             // 将上述解析出来的数据构成一个socketMsg
             SocketMsg socketMsg = null ; //
