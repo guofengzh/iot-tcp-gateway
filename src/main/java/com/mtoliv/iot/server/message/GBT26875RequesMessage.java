@@ -95,66 +95,6 @@ public class GBT26875RequesMessage implements Serializable {
         this.crc = crc;
     }
 
-    public static GBT26875RequesMessage fromByteBuf(ByteBuf in) {
-	    // 低字节先传输。
-        GBT26875RequesMessage message = new GBT26875RequesMessage() ;
-      // 启动符‘@@’,(2字节)，固定值64，64
-        int hd = in.readShortLE() ;
-        int t = 64 * 256 + 64 ;
-        if (hd != 64 * 256 + 64) {
-            in.clear();      // 错误处理 - 因为是变长报文，后面的报文没法处理了，所以，清空
-                             // 问题是，后续的报文也消除了，如果后续的报文总是不完整的，
-                             // 可能会导致所有的报文都没法处理
-            return null ;  // 返回错误可以抛异常，但必须在GBT26875RequestMessageDecoder.decode中
-                            // 进行处理，GBT26875RequestMessageDecoder.decode中不能使用cache(Exception)
-                            // 不是这里抛出的异常不在GBT26875RequestMessageDecoder.decode()中捕获，
-                            // 即不捕获Runtime的异常，ReplayingDecoder需要根据这些异常知道是不是所有
-                            // 报文数据都齐了
-                            // 后续错误处理类似处理
-        }
-
-        // 业务流水号, (2字节)
-        message.setSeqNo(in.readShortLE()) ;
-
-        // 协议版本,(2字节)
-        message.setVersion(in.readShortLE()) ;
-
-        // 时间标签, (6字节)
-        message.setTime(get6ByteLong(in)) ;
-
-        // 源地址，(6字节)
-        message.setSourceAddr(get6ByteLong(in)) ;
-
-        // 目的地址，(6字节)
-        message.setDestAddr(get6ByteLong(in)) ;
-
-        // 应用数据单元长,(2字节)
-        message.setDataLen(in.readShortLE()) ;
-
-        // 命令字节, (1字节)
-        message.setCmd(in.readByte()) ;
-
-        // 应用数据单元,(最大1 024字节)
-        ByteBuf dataBuf = in.readBytes(message.getDataLen()) ;
-        byte[] bytes = new byte[message.getDataLen()];
-        dataBuf.readBytes(bytes) ;
-        message.setData(bytes) ;
-        dataBuf.release() ;
-        // 校验, (1字节)
-        message.setCrc(in.readByte()) ;
-
-        // 结束符‘##，(2字节), 固定值35，35
-        int endSign = in.readShortLE() ;
-        if (endSign != 35 * 256 + 35) {
-            // 错误处理
-            return null ;
-        }
-
-        // 在这里做校验和处理，保持in不变。in中如果还有内容，它是后续报文的内容
-
-        return message ;
-	}
-
     @Override
     public String toString() {
         return "GBT26875RequesMessage:" +
@@ -167,11 +107,5 @@ public class GBT26875RequesMessage implements Serializable {
                 " cmd:" + Long.toHexString(cmd) +
                 " data:" + Hex.encodeHexString( data ) +
                 " crc: " + Long.toHexString(crc);
-    }
-
-    private static long get6ByteLong(ByteBuf in) {
-        long lowend = 0x0000FFFF & in.readShortLE() ;
-        long highend = 0x00FFL & in.readByte() ;
-        return (highend << 16) | lowend ;
     }
 }
