@@ -1,5 +1,6 @@
 package com.mtoliv.iot.server.message;
 
+@Deprecated
 public class RequestMesage {
     private int intValue;
     private String stringValue;

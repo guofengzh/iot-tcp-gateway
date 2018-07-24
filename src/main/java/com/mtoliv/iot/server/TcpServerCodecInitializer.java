@@ -1,10 +1,6 @@
 package com.mtoliv.iot.server;
 
-import com.mtoliv.iot.server.codec.RequestMessageDecoder;
-import com.mtoliv.iot.server.codec.ResponseMessageEncoder;
-import com.mtoliv.iot.server.codec.SessionStateHandler;
-import com.mtoliv.iot.server.codec.RequstMessageHandler;
-import com.mtoliv.iot.server.codec.IdleServerHandler;
+import com.mtoliv.iot.server.codec.*;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -48,7 +44,8 @@ public class TcpServerCodecInitializer extends ChannelInitializer<SocketChannel>
         ChannelPipeline pipeline = socketChannel.pipeline();
         // IdleStateHandler should always be the first handler in your pipeline.
         pipeline.addLast("idleStateHandler", new IdleStateHandler(6, 3, 0, TimeUnit.SECONDS));
-        pipeline.addLast("requestDecoder", new RequestMessageDecoder());
+       //pipeline.addLast("requestDecoder", new RequestMessageDecoder());
+        pipeline.addLast("requestDecoder", new GBT26875RequestMessageDecoder());
         pipeline.addLast("responseDecoder", new ResponseMessageEncoder());
         pipeline.addLast("idleServerHandler", new IdleServerHandler());
         pipeline.addLast("sessionActivationHandler", new SessionStateHandler(config));
