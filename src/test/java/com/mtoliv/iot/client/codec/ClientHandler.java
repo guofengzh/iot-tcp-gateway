@@ -18,6 +18,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
+    // Little-endian
     byte[] outData = {
             (byte)64,
             (byte)64,

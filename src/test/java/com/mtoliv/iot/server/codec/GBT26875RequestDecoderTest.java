@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 @Ignore
 public class GBT26875RequestDecoderTest {
+    // Little-endian
     byte[] outData = {
             (byte)64,
             (byte)64,
@@ -32,6 +33,7 @@ public class GBT26875RequestDecoderTest {
             (byte)0xdd,
             (byte)0xdd,
             (byte)5,       // data len
+            (byte)0,
             (byte)0x01,    // cmd
             (byte)0xf1,    // data
             (byte)0xf2,
@@ -39,8 +41,8 @@ public class GBT26875RequestDecoderTest {
             (byte)0xf4,
             (byte)0xf5,
             (byte)0xee, // crc, dummy value
-            (byte)(byte)35,
-            (byte)(byte)35
+            (byte)35,
+            (byte)35
     } ;
 
     @Test
