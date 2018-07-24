@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageEncoder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class GBT26875RequestDecoderTest {
     byte[] outData = {
             (byte)64,
