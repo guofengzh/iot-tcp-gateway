@@ -43,7 +43,7 @@ public class TcpServerCodecInitializer extends ChannelInitializer<SocketChannel>
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
         // IdleStateHandler should always be the first handler in your pipeline.
-        pipeline.addLast("idleStateHandler", new IdleStateHandler(6, 3, 0, TimeUnit.SECONDS));
+        pipeline.addLast("idleStateHandler", new IdleStateHandler(config.getChannelReadIdleSeconds(), config.getGetChannelWriteIdleSeconds(), 0, TimeUnit.SECONDS));
        //pipeline.addLast("requestDecoder", new RequestMessageDecoder());
         pipeline.addLast("requestDecoder", new GBT26875RequestMessageDecoder());
         pipeline.addLast("responseDecoder", new ResponseMessageEncoder());

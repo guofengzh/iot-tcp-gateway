@@ -35,7 +35,7 @@ public class SessionManager {
 
     @PostConstruct
     public void init() {
-        maxInactiveInterval = env.getRequiredProperty(Constants.PROPERT_session_expiration_second, Integer.class) ;
+        maxInactiveInterval = env.getRequiredProperty(Constants.PROPERT_session_expiration_seconds, Integer.class) ;
     }
 
     protected List<SessionListener> sessionListeners = null;
