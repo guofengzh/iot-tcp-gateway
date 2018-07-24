@@ -21,8 +21,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         if (hd != ( 64 << 8 ) + 64 ) {
             // 这个包不对，忽略所有的字节
             int length = in.readableBytes();
-            byte[] bytes = new byte[in.readableBytes()];
-            in.readBytes(bytes);
+            in.skipBytes(length);
 
             // 错误处理
 
