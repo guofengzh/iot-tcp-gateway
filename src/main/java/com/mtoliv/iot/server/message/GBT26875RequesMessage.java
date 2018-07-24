@@ -99,8 +99,15 @@ public class GBT26875RequesMessage implements Serializable {
         int hd = in.readShort() ;
         int t = 64 * 256 + 64 ;
         if (hd != 64 * 256 + 64) {
-            in.clear(); // 错误处理
-            return null ;
+            in.clear();      // 错误处理 - 因为是变长报文，后面的报文没法处理了，所以，清空
+                             // 问题是，后续的报文也消除了，如果后续的报文总是不完整的，
+                             // 可能会导致所有的报文都没法处理
+            return null ;  // 返回错误可以抛异常，但必须在GBT26875RequestMessageDecoder.decode中
+                            // 进行处理，GBT26875RequestMessageDecoder.decode中不能使用cache(Exception)
+                            // 不是这里抛出的异常不在GBT26875RequestMessageDecoder.decode()中捕获，
+                            // 即不捕获Runtime的异常，ReplayingDecoder需要根据这些异常知道是不是所有
+                            // 报文数据都齐了
+                            // 后续错误处理类似处理
         }
 
         // 业务流水号, (2字节)
@@ -133,15 +140,16 @@ public class GBT26875RequesMessage implements Serializable {
         // 校验, (1字节)
         message.setCrc(in.readByte()) ;
 
-        // 做校验，如果不对 in.clear(), 返回
-
         // 结束符‘##，(2字节), 固定值35，35
         int endSign = in.readShort() ;
         if (endSign != 35 * 256 + 35) {
-            in.clear() ;  // 错误处理
+            // 错误处理
             return null ;
         }
-		return message ;
+
+        // 在这里做校验和处理，保持in不变。in中如果还有内容，它是后续报文的内容
+
+        return message ;
 	}
 
     @Override
