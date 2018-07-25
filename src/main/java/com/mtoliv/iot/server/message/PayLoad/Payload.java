@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.message.payLoad;
 
-import com.mtoliv.iot.server.message.GBT26875Message;
+import com.mtoliv.iot.server.message.GBT26875MessageIntef;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 图5, P5结构的定义
  */
-public class Payload implements GBT26875Message {
+public class Payload implements GBT26875MessageIntef {
     // 解码状态 - 总为OK
     private MessageStatus status = MessageStatus.OK ;
 

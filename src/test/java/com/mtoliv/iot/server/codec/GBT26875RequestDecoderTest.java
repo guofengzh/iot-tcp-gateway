@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.codec;
 
-import com.mtoliv.iot.server.message.GBT26875RequesMessage;
+import com.mtoliv.iot.server.message.GBT26875Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -63,7 +63,7 @@ public class GBT26875RequestDecoderTest {
         channel.writeOutbound( outData );
         channel.writeInbound( channel.readOutbound() );
         // then
-        GBT26875RequesMessage requesMessage = (GBT26875RequesMessage) channel.readInbound();
+        GBT26875Message requesMessage = (GBT26875Message) channel.readInbound();
         assertNotNull(requesMessage);
         assertEquals( requesMessage.getSeqNo(), 0xaabb );
     }
