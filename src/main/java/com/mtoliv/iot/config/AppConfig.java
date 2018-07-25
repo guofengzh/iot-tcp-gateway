@@ -2,7 +2,9 @@ package com.mtoliv.iot.config;
 
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.api.TcpWirter;
+import com.mtoliv.iot.server.message.ReaderIdleEvent;
 import com.mtoliv.iot.server.message.ResponseMessage;
+import com.mtoliv.iot.server.message.WriterIdleEvent;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
@@ -46,9 +48,14 @@ public class AppConfig {
 			public Optional<Object> readerCallback(Session session, Object msg) {
 				System.out.println("Got it:" + msg) ;
 				//return Optional.empty();
-                ResponseMessage responseMessage = new ResponseMessage() ;
-                responseMessage.setIntValue(200);
-                return Optional.of(responseMessage) ;
+				if ( msg instanceof ReaderIdleEvent || msg instanceof WriterIdleEvent) {
+				    // 应该构造一个PING响应发向设备。这里简单处理成不发送任何响应
+					return Optional.empty() ;
+				} else {
+					ResponseMessage responseMessage = new ResponseMessage();
+					responseMessage.setIntValue(200);
+					return Optional.of(responseMessage);
+				}
 			}
 		} ;
 	}

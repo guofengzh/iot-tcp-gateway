@@ -3,6 +3,7 @@ package com.mtoliv.iot.server.codec;
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.TcpServerTransportConfig;
 import com.mtoliv.iot.server.api.TcpWirter;
+import com.mtoliv.iot.server.message.GBT26875Message;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import io.netty.channel.*;
@@ -44,6 +45,19 @@ public class RequstMessageHandler extends ChannelInboundHandlerAdapter {
         response.ifPresent(resp-> session.send(resp));
     }
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof GBT26875Message ) {
+            // we forward events for our TckReader to process it
+            Session session = sessionManager.getSession(ctx) ;
+            Optional<Object> response = reader.readerCallback(session, evt);
+            response.ifPresent(resp-> session.send(resp));
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.warn("RequstMessageHandler (" + getRemoteAddress(ctx) + ") -> Unexpected exception from downstream." + cause);
         String sessionId0 = getChannelSessionHook(ctx);

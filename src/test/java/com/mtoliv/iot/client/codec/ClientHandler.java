@@ -15,6 +15,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println((ResponseMessage)msg);
+
+        // 不急于关闭客户端连接，模拟连接空闲
+        Thread.sleep(20 * 1000);
+
         ctx.close();
     }
 

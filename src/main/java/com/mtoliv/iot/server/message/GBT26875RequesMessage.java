@@ -132,6 +132,7 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
     @Override
     public String toString() {
         return "GBT26875RequesMessage:" +
+                " status:" + status +
                 " starter:" + Integer.toHexString(starter) +
                 " seqNo:" + Integer.toHexString(seqNo) +
                 " version:" + Integer.toHexString(version) +
