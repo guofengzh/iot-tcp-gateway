@@ -2,9 +2,13 @@ package com.mtoliv.iot.config;
 
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.api.TcpWirter;
+import com.mtoliv.iot.server.message.GBT26875Message;
 import com.mtoliv.iot.server.message.ReaderIdleEvent;
 import com.mtoliv.iot.server.message.ResponseMessage;
 import com.mtoliv.iot.server.message.WriterIdleEvent;
+import com.mtoliv.iot.server.message.payLoad.Payload;
+import com.mtoliv.iot.server.message.payLoad.PayloadObjectTypeFlag;
+import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJiang;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
@@ -52,9 +56,21 @@ public class AppConfig {
 				    // 应该构造一个PING响应发向设备。这里简单处理成不发送任何响应
 					return Optional.empty() ;
 				} else {
-					ResponseMessage responseMessage = new ResponseMessage();
-					responseMessage.setIntValue(200);
-					return Optional.of(responseMessage);
+					// 向设备发送一个响应
+					GBT26875Message request = (GBT26875Message)msg ;
+
+					GBT26875Message response = new GBT26875Message() ;
+					response.setSeqNo(request.getSeqNo());
+					response.setMajor(1);
+
+					// payload
+					Payload payload = new Payload() ;
+					payload.setTypeFlag(PayloadObjectTypeFlag.XINXI_CHUANSHU_ZHUANGZHI_SHIJIANG);
+					FC90XingXiChuanFuZhuangZhiShiJiang payloadObject = new FC90XingXiChuanFuZhuangZhiShiJiang() ;
+					payloadObject.setSecond(1);
+					payload.addPayloadObject(payloadObject);
+					response.setData(payload);
+					return Optional.of(response);
 				}
 			}
 		} ;
