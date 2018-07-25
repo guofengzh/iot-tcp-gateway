@@ -1,5 +1,6 @@
 package com.mtoliv.iot.server.message;
 
+import com.mtoliv.iot.server.message.payLoad.Payload;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.binary.Hex;
 
@@ -18,10 +19,10 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
     private long time ;
     private long sourceAddr ;
     private long destAddr ;
-    private int dataLen ;
+    //private int dataLen ;
     private byte cmd ;
-    private byte[] data ;
-    private byte crc ;
+    private Payload data ;
+    //private byte crc ;
     private int terminator ;
 
     public GBT26875RequesMessage() {
@@ -85,14 +86,6 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
         this.destAddr = destAddr;
     }
 
-    public int getDataLen() {
-        return dataLen;
-    }
-
-    public void setDataLen(int dataLen) {
-        this.dataLen = dataLen;
-    }
-
     public byte getCmd() {
         return cmd;
     }
@@ -101,20 +94,12 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
         this.cmd = cmd;
     }
 
-    public byte[] getData() {
+    public Payload getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(Payload data) {
         this.data = data;
-    }
-
-    public long getCrc() {
-        return crc;
-    }
-
-    public void setCrc(byte crc) {
-        this.crc = crc;
     }
 
     public int getTerminator() {
@@ -123,6 +108,16 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
 
     public void setTerminator(int terminator) {
         this.terminator = terminator;
+    }
+
+    @Override
+    public int getDataLengthInBytes() {
+        return data != null ? data.getDataLengthInBytes() : 0 ;
+    }
+
+    @Override
+    public long getCrc() {
+        return seqNo + version + time + sourceAddr + destAddr + getDataLengthInBytes() + cmd + data.getCrc() ;
     }
 
     @Override
@@ -135,10 +130,10 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
                 " time:" + Long.toHexString(time) +
                 " sourceAddr:" + Long.toHexString(sourceAddr) +
                 " destAddr:" + Long.toHexString(destAddr) +
-                " dataLen:" + Integer.toHexString(dataLen) +
+                " dataLen:" + Integer.toHexString(getDataLengthInBytes()) +
                 " cmd:" + Integer.toHexString(cmd) +
-                " data:" + Hex.encodeHexString( data ) +
-                " crc: " + Hex.encodeHexString(new byte[]{crc}) +
+                " data:" + data +
+                " crc: " + Hex.encodeHexString(new byte[]{(byte)getCrc()}) +
                 " terminator:" + Integer.toHexString( terminator ) ;
     }
 
@@ -151,7 +146,7 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
             // 这个包不对，忽略所有的字节
             int length = in.readableBytes();
             in.skipBytes(length);
-            this.setStatus(GBT26875RequesMessage.MessageStatus.HEADER_MISMATCH);
+            this.setStatus(MessageStatus.HEADER_MISMATCH);
             return ;
         }
 
@@ -171,12 +166,12 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
         this.setDestAddr(get6ByteLong(in)) ;
 
         // 应用数据单元长,(2字节)
-        this.setDataLen(in.readUnsignedShortLE()) ;
-        if (this.getDataLen() > 1024) {
+        int dataLen = in.readUnsignedShortLE() ;
+        if (dataLen > 1024) {
             // skip all inboundd bytes
             int length = in.readableBytes();
             in.skipBytes(length);
-            this.setStatus(GBT26875RequesMessage.MessageStatus.DATA_LEN_TOO_LARGE);
+            this.setStatus(MessageStatus.DATA_LEN_TOO_LARGE);
             return ;
         }
 
@@ -184,23 +179,27 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
         this.setCmd(in.readByte()) ;
 
         // 应用数据单元,(最大1 024字节)
-        ByteBuf dataBuf = in.readBytes(this.getDataLen()) ;
-        byte[] bytes = new byte[this.getDataLen()];
-        dataBuf.readBytes(bytes) ;
-        this.setData(bytes) ;
-        dataBuf.release() ;
+        if (dataLen != 0) {
+            data = new Payload() ;
+            data.fromByteBuffer(in) ;
+        }
+
         // 校验和, (1字节)
-        this.setCrc(in.readByte()) ;
+        long crc = in.readUnsignedByte() ;
 
         // 结束符‘##，(2字节), 固定值35，35
         int endSign = in.readUnsignedShortLE() ;
         if (endSign != (35 << 8 ) + 35) {
-            this.setStatus(GBT26875RequesMessage.MessageStatus.TEMINATOR_MISMATCH);
+            this.setStatus(MessageStatus.TEMINATOR_MISMATCH);
             return ;
         }
 
         // 在这里做校验和处理
         // IP包有数据包的校验和处理(确保传输中数据包不损坏)，所以，这里校验和处理没有意义，可以不做。
+        //if ((byte)crc != (byte)getCrc()) {
+        //    // 校验和不对
+         //   this.setStatus(MessageStatus.CRC_ERROR);
+         //}
     }
 
     @Override
@@ -223,29 +222,24 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
         // 目的地址，(6字节)
         setLong6Byte(out, getDestAddr());
 
-/*   TODO: replace with payload
         // 应用数据单元长,(2字节)
-        this.setDataLen(in.readUnsignedShortLE()) ;
-        if (this.getDataLen() > 1024) {
-            // skip all inboundd bytes
-            int length = in.readableBytes();
-            in.skipBytes(length);
-            this.setStatus(GBT26875RequesMessage.MessageStatus.DATA_LEN_TOO_LARGE);
-            return ;
+        if (data != null ) {
+            out.writeShortLE(data.getDataLengthInBytes()) ;
         }
 
         // 命令字节, (1字节)
-        this.setCmd(in.readByte()) ;
+        out.writeByte(getCmd()) ;
 
-        // 应用数据单元,(最大1 024字节)
-        ByteBuf dataBuf = in.readBytes(this.getDataLen()) ;
-        byte[] bytes = new byte[this.getDataLen()];
-        dataBuf.readBytes(bytes) ;
-        this.setData(bytes) ;
-        dataBuf.release() ;
+        // 应用数据单元,(最大1024字节)
+        long payloadCheckSum = 0 ;
+        if (data != null ) {
+            payloadCheckSum = data.getCrc() ;
+            data.toByteBuffer(out);
+        }
+
         // 校验和, (1字节)
-        this.setCrc(in.readByte()) ;
-*/
+        out.writeByte((byte)(this.getCrc() + payloadCheckSum ) ) ;
+
         // 结束符‘##，(2字节), 固定值35，35
         out.writeIntLE(TERMINATOR) ;
     }

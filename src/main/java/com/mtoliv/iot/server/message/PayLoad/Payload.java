@@ -10,7 +10,7 @@ import java.util.List;
  * 图5, P5结构的定义
  */
 public class Payload implements GBT26875Message {
-    // 解码状态
+    // 解码状态 - 总为OK
     private MessageStatus status = MessageStatus.OK ;
 
     @Override
@@ -62,7 +62,23 @@ public class Payload implements GBT26875Message {
         this.payloadObjects = payloadObjects;
     }
 
+    @Override
+    public String toString() {
+        return "Payload{" +
+                "status=" + status +
+                ", typeFlag=" + Integer.toHexString(typeFlag) +
+                ", nuber =" + Integer.toHexString(payloadObjects.size()) +
+                ", payloadObjects=" + payloadObjects +
+                '}';
+    }
+
     // --- 协议代码
+
+    @Override
+    public int getDataLengthInBytes() {
+        int payloadObjectLen =  payloadObjects.stream().mapToInt(i->i.getDataLengthInBytes()).sum() ;
+        return 1 + 1 + payloadObjectLen;
+    }
 
     @Override
     public long getCrc() {

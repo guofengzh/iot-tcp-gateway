@@ -13,7 +13,8 @@ public interface GBT26875Message extends Serializable {
         OK,
         HEADER_MISMATCH,
         DATA_LEN_TOO_LARGE,
-        TEMINATOR_MISMATCH
+        TEMINATOR_MISMATCH,
+        CRC_ERROR
     }
 
     default long get6ByteLong(ByteBuf in) {
@@ -39,6 +40,7 @@ public interface GBT26875Message extends Serializable {
      *
      * @return
      */
+    int getDataLengthInBytes() ;
     long getCrc() ;
     void fromByteBuffer(ByteBuf in) ;
     void toByteBuffer(ByteBuf out) ;

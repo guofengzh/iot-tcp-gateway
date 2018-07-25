@@ -5,4 +5,5 @@ public interface TypeFlag {
     int XITONG_ZHUANGTAI = 1 ;
 
     // 下行
+    int XINXI_CHUANSHU_ZHUANGZHI_SHIJIANG = 90 ;
 }

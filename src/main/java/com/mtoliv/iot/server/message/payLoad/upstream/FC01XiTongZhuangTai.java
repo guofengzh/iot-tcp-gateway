@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * 8.3.1.1 上传建筑消防设施系统状态, 图18，P17
  */
-public class FC01SystemStatus extends PayloadObject {
+public class FC01XiTongZhuangTai extends PayloadObject {
     private byte systemType ;     // 系统类型1(1字节)
     private byte systemAddress ;  // 系统地址1(1字节)
     private int systemStatus ;    // 系统状舂1(2字节)
@@ -46,7 +46,7 @@ public class FC01SystemStatus extends PayloadObject {
 
     @Override
     public String toString() {
-        return "FC01SystemStatus{" +
+        return "FC01XiTongZhuangTai{" +
                 "systemType=" + Integer.toHexString(systemType) +
                 ", systemAddress=" + Integer.toHexString(systemAddress) +
                 ", systemStatus=" + Integer.toHexString(systemStatus) +
@@ -55,6 +55,11 @@ public class FC01SystemStatus extends PayloadObject {
     }
 
     // --- 协议代码
+
+    @Override
+    public int getDataLengthInBytes() {
+        return 1 + 1 + 2 + 6 ;
+    }
 
     @Override
     public long getCrc() {
