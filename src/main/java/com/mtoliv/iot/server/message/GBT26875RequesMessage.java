@@ -6,10 +6,19 @@ import org.apache.commons.codec.binary.Hex;
 import java.io.Serializable;
 import java.nio.ByteOrder;
 
-public class GBT26875RequesMessage implements Serializable {
+public class GBT26875RequesMessage implements GBT26875Message, Serializable {
+    private static final long serialVersionUID = -548505853531960234L;
 
-	private static final long serialVersionUID = -548505853531960234L;
+    public static enum MessageStatus {
+        OK,
+        HEADER_MISMATCH,
+        DATA_LEN_ZERO_OR_TOO_LARGE,
+        TEMINATOR_MISMATCH
+    }
 
+    private MessageStatus status = MessageStatus.OK;
+
+    private int starter ;
     private int seqNo ;
     private int version ;
     private long time ;
@@ -19,9 +28,26 @@ public class GBT26875RequesMessage implements Serializable {
     private byte cmd ;
     private byte[] data ;
     private byte crc ;
+    private int terminator ;
 
-	public GBT26875RequesMessage() {
+    public GBT26875RequesMessage() {
 	}
+
+    public MessageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MessageStatus status) {
+        this.status = status;
+    }
+
+    public int getStarter() {
+        return starter;
+    }
+
+    public void setStarter(int starter) {
+        this.starter = starter;
+    }
 
     public int getSeqNo() {
         return seqNo;
@@ -95,9 +121,18 @@ public class GBT26875RequesMessage implements Serializable {
         this.crc = crc;
     }
 
+    public int getTerminator() {
+        return terminator;
+    }
+
+    public void setTerminator(int terminator) {
+        this.terminator = terminator;
+    }
+
     @Override
     public String toString() {
         return "GBT26875RequesMessage:" +
+                " starter:" + Integer.toHexString(starter) +
                 " seqNo:" + Integer.toHexString(seqNo) +
                 " version:" + Integer.toHexString(version) +
                 " time:" + Long.toHexString(time) +
@@ -106,6 +141,7 @@ public class GBT26875RequesMessage implements Serializable {
                 " dataLen:" + Integer.toHexString(dataLen) +
                 " cmd:" + Integer.toHexString(cmd) +
                 " data:" + Hex.encodeHexString( data ) +
-                " crc: " + Hex.encodeHexString(new byte[]{crc});
+                " crc: " + Hex.encodeHexString(new byte[]{crc}) +
+                " terminator:" + Integer.toHexString( terminator ) ;
     }
 }

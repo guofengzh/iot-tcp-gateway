@@ -18,13 +18,13 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         GBT26875RequesMessage message = new GBT26875RequesMessage() ;
         // 启动符‘@@’,(2字节)，固定值64，64
         int hd = in.readUnsignedShortLE() ;
+        message.setStarter(hd);
         if (hd != ( 64 << 8 ) + 64 ) {
             // 这个包不对，忽略所有的字节
             int length = in.readableBytes();
             in.skipBytes(length);
-
-            // 错误处理
-
+            message.setStatus(GBT26875RequesMessage.MessageStatus.HEADER_MISMATCH);
+            out.add(message) ;
             return ;
         }
 
@@ -45,6 +45,13 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
 
         // 应用数据单元长,(2字节)
         message.setDataLen(in.readUnsignedShortLE()) ;
+        if (message.getDataLen() > 1024 ) {
+            // skip all inboundd bytes
+            int length = in.readableBytes();
+            in.skipBytes(length);
+            message.setStatus(GBT26875RequesMessage.MessageStatus.DATA_LEN_ZERO_OR_TOO_LARGE);
+            out.add(message) ;
+        }
 
         // 命令字节, (1字节)
         message.setCmd(in.readByte()) ;
@@ -61,10 +68,13 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
         // 结束符‘##，(2字节), 固定值35，35
         int endSign = in.readUnsignedShortLE() ;
         if (endSign != (35 << 8 ) + 35) {
-            // 包的结尾不对。错误处理
+            message.setStatus(GBT26875RequesMessage.MessageStatus.TEMINATOR_MISMATCH);
+            out.add(message) ;
+            return ;
         }
 
-        // 在这里做校验和处理 - IP包有数据包的校验和处理(确保传输中数据包不损坏)，所以，这里校验和处理没有意义，可以不做。
+        // 在这里做校验和处理
+        // IP包有数据包的校验和处理(确保传输中数据包不损坏)，所以，这里校验和处理没有意义，可以不做。
         out.add(message) ;
     }
 
