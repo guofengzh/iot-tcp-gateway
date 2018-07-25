@@ -45,7 +45,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
 
         // 应用数据单元长,(2字节)
         message.setDataLen(in.readUnsignedShortLE()) ;
-        if (message.getDataLen() > 1024 || message.getDataLen() < 0 ) {
+        if (message.getDataLen() > 1024) {
             // skip all inboundd bytes
             int length = in.readableBytes();
             in.skipBytes(length);
