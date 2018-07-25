@@ -49,7 +49,7 @@ public class GBT26875RequestMessageDecoder extends ReplayingDecoder<GBT26875Requ
             // skip all inboundd bytes
             int length = in.readableBytes();
             in.skipBytes(length);
-            message.setStatus(GBT26875RequesMessage.MessageStatus.DATA_LEN_ZERO_OR_TOO_LARGE);
+            message.setStatus(GBT26875RequesMessage.MessageStatus.DATA_LEN_TOO_LARGE);
             out.add(message) ;
         }
 

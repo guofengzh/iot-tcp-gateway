@@ -12,7 +12,7 @@ public class GBT26875RequesMessage implements GBT26875Message, Serializable {
     public static enum MessageStatus {
         OK,
         HEADER_MISMATCH,
-        DATA_LEN_ZERO_OR_TOO_LARGE,
+        DATA_LEN_TOO_LARGE,
         TEMINATOR_MISMATCH
     }
 
