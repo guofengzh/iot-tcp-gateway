@@ -63,11 +63,11 @@ public class AppConfig {
 
 					// payload
 					Payload payload = new Payload() ;
-					payload.setTypeFlag(PayloadObjectTypeFlag.XINXI_CHUANSHU_ZHUANGZHI_SHIJIANG);
+					payload.setTypeFlag(PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
 					FC90XingXiChuanFuZhuangZhiShiJiang payloadObject = new FC90XingXiChuanFuZhuangZhiShiJiang() ;
 					payloadObject.setSecond(1);
 					payload.addPayloadObject(payloadObject);
-					response.setData(payload);
+					response.setPayload(payload);
 					return Optional.of(response);
 				}
 			}

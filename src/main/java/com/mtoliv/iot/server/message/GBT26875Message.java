@@ -25,7 +25,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
     private long destAddr ;
     //private int dataLen ;
     private byte cmd ;
-    private Payload data ;
+    private Payload payload;
     //private byte crc ;
     private int terminator ;
 
@@ -147,12 +147,12 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         this.cmd = cmd;
     }
 
-    public Payload getData() {
-        return data;
+    public Payload getPayload() {
+        return payload;
     }
 
-    public void setData(Payload data) {
-        this.data = data;
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 
     public int getTerminator() {
@@ -165,13 +165,13 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
     @Override
     public int getDataLengthInBytes() {
-        return data != null ? data.getDataLengthInBytes() : 0 ;
+        return payload != null ? payload.getDataLengthInBytes() : 0 ;
     }
 
     @Override
     public long getCrc() {
         return seqNo + major + minor + second + minute + hour + day + month + year +
-                sourceAddr + destAddr + getDataLengthInBytes() + cmd + data.getCrc() ;
+                sourceAddr + destAddr + getDataLengthInBytes() + cmd + payload.getCrc() ;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
                 " destAddr:" + Long.toHexString(destAddr) +
                 " dataLen:" + Integer.toHexString(getDataLengthInBytes()) +
                 " cmd:" + Integer.toHexString(cmd) +
-                " data:" + data +
+                " payload:" + payload +
                 " crc: " + Hex.encodeHexString(new byte[]{(byte)getCrc()}) +
                 " terminator:" + Integer.toHexString( terminator ) ;
     }
@@ -246,8 +246,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
         // 应用数据单元,(最大1 024字节)
         if (dataLen != 0) {
-            data = new Payload() ;
-            data.fromByteBuffer(in) ;
+            payload = new Payload() ;
+            payload.fromByteBuffer(in) ;
         }
 
         // 校验和, (1字节)
@@ -295,8 +295,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         setLong6Byte(out, getDestAddr());
 
         // 应用数据单元长,(2字节)
-        if (data != null ) {
-            out.writeShortLE(data.getDataLengthInBytes()) ;
+        if (payload != null ) {
+            out.writeShortLE(payload.getDataLengthInBytes()) ;
         }
 
         // 命令字节, (1字节)
@@ -304,9 +304,9 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
         // 应用数据单元,(最大1024字节)
         long payloadCheckSum = 0 ;
-        if (data != null ) {
-            payloadCheckSum = data.getCrc() ;
-            data.toByteBuffer(out);
+        if (payload != null ) {
+            payloadCheckSum = payload.getCrc() ;
+            payload.toByteBuffer(out);
         }
 
         // 校验和, (1字节)

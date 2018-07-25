@@ -27,11 +27,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
         // payload
         Payload payload = new Payload() ;
-        payload.setTypeFlag(PayloadObjectTypeFlag.XITONG_ZHUANGTAI);
+        payload.setTypeFlag(PayloadObjectTypeFlag.FC01XiTongZhuangTai);
         FC01XiTongZhuangTai payloadObject = new FC01XiTongZhuangTai() ;
         payloadObject.setSystemStatus(1);
         payload.addPayloadObject(payloadObject);
-        message.setData(payload);
+        message.setPayload(payload);
 
         ChannelFuture future = ctx.writeAndFlush(message);
     }

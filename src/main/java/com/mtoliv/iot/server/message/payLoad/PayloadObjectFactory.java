@@ -7,11 +7,11 @@ public class PayloadObjectFactory {
     public synchronized static PayloadObject createPayloadObject(byte typeFlag ) {
         switch (typeFlag) {
             // 上行
-            case PayloadObjectTypeFlag.XITONG_ZHUANGTAI:
+            case PayloadObjectTypeFlag.FC01XiTongZhuangTai:
                 return new FC01XiTongZhuangTai() ;
 
             // 下行
-            case PayloadObjectTypeFlag.XINXI_CHUANSHU_ZHUANGZHI_SHIJIANG:
+            case PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang:
                 return new FC90XingXiChuanFuZhuangZhiShiJiang() ;
 
                 default:
