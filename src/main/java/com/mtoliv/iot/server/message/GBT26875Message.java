@@ -202,7 +202,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         // 启动符‘@@’,(2字节)，固定值64，64
         int hd = in.readUnsignedShortLE() ;
         this.setStarter(hd);
-        if (hd != ( 64 << 8 ) + 64 ) {
+        if (hd != STARTER ) {
             // 这个包不对，忽略所有的字节
             int length = in.readableBytes();
             in.skipBytes(length);
@@ -255,7 +255,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
         // 结束符‘##，(2字节), 固定值35，35
         int endSign = in.readUnsignedShortLE() ;
-        if (endSign != (35 << 8 ) + 35) {
+        this.setTerminator(endSign);
+        if (endSign != TERMINATOR) {
             this.setStatus(MessageStatus.TEMINATOR_MISMATCH);
             return ;
         }

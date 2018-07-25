@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface GBT26875MessageIntef extends Serializable {
-    int STARTER = ( 64 << 8 ) + 64 ;
-    int TERMINATOR = (35 << 8 ) + 35 ;
+    int STARTER = ( 64 << 8 ) + 64 ;   // 启动符‘@@’,(2字节)，固定值64，64
+    int TERMINATOR = (35 << 8 ) + 35 ; // 结束符‘##，(2字节), 固定值35，35
 
     enum MessageStatus {
         OK,
