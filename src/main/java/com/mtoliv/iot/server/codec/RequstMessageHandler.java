@@ -59,6 +59,7 @@ public class RequstMessageHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.warn("RequstMessageHandler (" + getRemoteAddress(ctx) + ") -> Unexpected exception from downstream." + cause);
+        logger.error(cause.getMessage(), cause);
         String sessionId0 = getChannelSessionHook(ctx);
         if (StringUtils.isNotBlank(sessionId0)) {
             logger.error("RequstMessageHandler exceptionCaught (sessionId0 -> " + sessionId0 + ", ctx -> " + ctx.toString() + ") -> Unexpected exception from downstream." + cause);

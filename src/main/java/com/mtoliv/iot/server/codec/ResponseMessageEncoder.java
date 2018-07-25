@@ -1,7 +1,6 @@
 package com.mtoliv.iot.server.codec;
 
 import com.mtoliv.iot.server.message.GBT26875Message;
-import com.mtoliv.iot.server.message.ResponseMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
