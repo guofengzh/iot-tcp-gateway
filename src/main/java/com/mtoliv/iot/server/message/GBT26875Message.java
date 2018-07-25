@@ -13,8 +13,14 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
     private int starter ;
     private int seqNo ;
-    private int version ;
-    private long time ;
+    private int major ;
+    private int minor ;
+    private int second ;
+    private int minute ;
+    private int hour ;
+    private int day ;
+    private int month ;
+    private int year ;
     private long sourceAddr ;
     private long destAddr ;
     //private int dataLen ;
@@ -52,20 +58,69 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         this.seqNo = seqNo;
     }
 
-    public int getVersion() {
-        return version;
+    public int getMajor() {
+        return major;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setMajor(int major) {
+        this.major = major;
     }
 
-    public long getTime() {
-        return time;
+    public int getMinor() {
+        return minor;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setMinor(int minor) {
+        this.minor = minor;
+    }
+
+
+    public int getSecond() {
+        return second;
+    }
+
+    public void setSecond(int second) {
+        this.second = second;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public long getSourceAddr() {
@@ -115,7 +170,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
     @Override
     public long getCrc() {
-        return seqNo + version + time + sourceAddr + destAddr + getDataLengthInBytes() + cmd + data.getCrc() ;
+        return seqNo + major + minor + second + minute + hour + day + month + year +
+                sourceAddr + destAddr + getDataLengthInBytes() + cmd + data.getCrc() ;
     }
 
     @Override
@@ -124,8 +180,14 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
                 " status:" + status +
                 " starter:" + Integer.toHexString(starter) +
                 " seqNo:" + Integer.toHexString(seqNo) +
-                " version:" + Integer.toHexString(version) +
-                " time:" + Long.toHexString(time) +
+                " major:" + Integer.toHexString(major) +
+                " minor:" + Integer.toHexString(minor) +
+                " second:" + Integer.toHexString(second) +
+                " minute:" + Integer.toHexString(minute) +
+                " hour:" + Integer.toHexString(hour) +
+                " day:" + Integer.toHexString(day) +
+                " month:" + Integer.toHexString(month) +
+                " year:" + Integer.toHexString(year) +
                 " sourceAddr:" + Long.toHexString(sourceAddr) +
                 " destAddr:" + Long.toHexString(destAddr) +
                 " dataLen:" + Integer.toHexString(getDataLengthInBytes()) +
@@ -152,10 +214,16 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         this.setSeqNo(in.readUnsignedShortLE()) ;
 
         // 协议版本,(2字节)
-        this.setVersion(in.readUnsignedShortLE()) ;
+        this.setMajor(in.readUnsignedByte());
+        this.setMinor(in.readUnsignedByte());
 
         // 时间标签, (6字节)
-        this.setTime(get6ByteLong(in)) ;
+        this.setSecond(in.readUnsignedByte()) ;
+        this.setMinute(in.readUnsignedByte()); ;
+        this.setHour(in.readUnsignedByte()); ;
+        this.setDay(in.readUnsignedByte()); ;
+        this.setMonth(in.readUnsignedByte()); ;
+        this.setYear(in.readUnsignedByte()); ;
 
         // 源地址，(6字节)
         this.setSourceAddr(get6ByteLong(in)) ;
@@ -209,10 +277,16 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         out.writeShortLE(getSeqNo()) ;
 
         // 协议版本,(2字节)
-        out.writeShortLE(getVersion()) ;
+        out.writeShortLE(getMajor()) ;
+        out.writeShortLE(getMinor()) ;
 
         // 时间标签, (6字节)
-        setLong6Byte(out, getTime());
+        out.writeByte(getSecond()) ;
+        out.writeByte(getMinute()) ;
+        out.writeByte(getHour()) ;
+        out.writeByte(getDay()) ;
+        out.writeByte(getMonth()) ;
+        out.writeByte(getYear()) ;
 
         // 源地址，(6字节)
         setLong6Byte(out, getSourceAddr());
