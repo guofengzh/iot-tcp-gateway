@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.message.payLoad;
 
-public interface TypeFlag {
+public interface PayloadObjectTypeFlag {
     // 上行
     int XITONG_ZHUANGTAI = 1 ;
 
