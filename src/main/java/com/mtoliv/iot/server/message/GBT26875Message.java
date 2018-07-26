@@ -11,7 +11,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
 
     private MessageStatus status = MessageStatus.OK;
 
-    private int starter ;
+    private int starter = STARTER ;
     private int seqNo ;
     private int major ;
     private int minor ;
@@ -27,7 +27,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
     private byte cmd ;
     private Payload payload;
     //private byte crc ;
-    private int terminator ;
+    private int terminator = TERMINATOR;
 
     public GBT26875Message() {
 	}
@@ -171,7 +171,7 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
     @Override
     public long getCrc() {
         return seqNo + major + minor + second + minute + hour + day + month + year +
-                sourceAddr + destAddr + getDataLengthInBytes() + cmd + payload.getCrc() ;
+                sourceAddr + destAddr + getDataLengthInBytes() + cmd + (payload == null ? 0 : payload.getCrc()) ;
     }
 
     @Override

@@ -91,7 +91,7 @@ public class Payload implements GBT26875MessageIntef {
            this.setTypeFlag(in.readByte());
            int no = in.readByte() ;
            for (int i = 0 ; i < no ; i++ ) {
-               PayloadObject payloadObject = PayloadObjectFactory.createPayloadObject(typeFlag) ;
+               PayloadObject payloadObject = PayloadObjectFactory.createPayloadObject(this, getTypeFlag()) ;
                payloadObject.fromByteBuffer(in) ;
                this.addPayloadObject(payloadObject);
         }

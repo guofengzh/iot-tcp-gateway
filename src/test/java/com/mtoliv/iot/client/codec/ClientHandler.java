@@ -2,6 +2,7 @@ package com.mtoliv.iot.client.codec;
 
 import com.mtoliv.iot.server.message.GBT26875Message;
 import com.mtoliv.iot.server.message.payLoad.Payload;
+import com.mtoliv.iot.server.message.payLoad.PayloadObjectFactory;
 import com.mtoliv.iot.server.message.payLoad.PayloadObjectTypeFlag;
 import com.mtoliv.iot.server.message.payLoad.upstream.FC01XiTongZhuangTai;
 import io.netty.channel.ChannelFuture;
@@ -28,7 +29,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         // payload
         Payload payload = new Payload() ;
         payload.setTypeFlag(PayloadObjectTypeFlag.FC01XiTongZhuangTai);
-        FC01XiTongZhuangTai payloadObject = new FC01XiTongZhuangTai() ;
+        FC01XiTongZhuangTai payloadObject = (FC01XiTongZhuangTai)PayloadObjectFactory.createPayloadObject(payload, PayloadObjectTypeFlag.FC01XiTongZhuangTai);
         payloadObject.setSystemStatus(1);
         payload.addPayloadObject(payloadObject);
         message.setPayload(payload);

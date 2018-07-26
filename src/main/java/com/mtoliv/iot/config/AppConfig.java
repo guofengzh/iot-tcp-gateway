@@ -6,12 +6,15 @@ import com.mtoliv.iot.server.message.GBT26875Message;
 import com.mtoliv.iot.server.message.ReaderIdleEvent;
 import com.mtoliv.iot.server.message.WriterIdleEvent;
 import com.mtoliv.iot.server.message.payLoad.Payload;
+import com.mtoliv.iot.server.message.payLoad.PayloadObjectFactory;
 import com.mtoliv.iot.server.message.payLoad.PayloadObjectTypeFlag;
 import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJiang;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
 import com.mtoliv.iot.server.session.listener.SessionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -25,6 +28,7 @@ import java.util.Optional;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class AppConfig {
+    private final static Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
 	@Resource
 	private Environment env;
@@ -48,7 +52,7 @@ public class AppConfig {
 		return new TcpReader() {
 			@Override
 			public Optional<Object> readerCallback(Session session, Object msg) {
-				System.out.println("Got it:" + msg) ;
+                logger.info("Got request:" + msg); ;
 				//return Optional.empty();
 				if ( msg instanceof ReaderIdleEvent || msg instanceof WriterIdleEvent) {
 				    // 应该构造一个PING响应发向设备。这里简单处理成不发送任何响应
@@ -64,7 +68,8 @@ public class AppConfig {
 					// payload
 					Payload payload = new Payload() ;
 					payload.setTypeFlag(PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
-					FC90XingXiChuanFuZhuangZhiShiJiang payloadObject = new FC90XingXiChuanFuZhuangZhiShiJiang() ;
+					FC90XingXiChuanFuZhuangZhiShiJiang payloadObject =
+							(FC90XingXiChuanFuZhuangZhiShiJiang)PayloadObjectFactory.createPayloadObject(payload, PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
 					payloadObject.setSecond(1);
 					payload.addPayloadObject(payloadObject);
 					response.setPayload(payload);
