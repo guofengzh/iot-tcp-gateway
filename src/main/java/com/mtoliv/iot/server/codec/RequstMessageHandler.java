@@ -3,6 +3,7 @@ package com.mtoliv.iot.server.codec;
 import com.mtoliv.iot.server.api.TcpReader;
 import com.mtoliv.iot.server.TcpServerTransportConfig;
 import com.mtoliv.iot.server.message.GBT26875MessageIntef;
+import com.mtoliv.iot.server.message.IdleEvent;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import io.netty.channel.*;
@@ -46,7 +47,7 @@ public class RequstMessageHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof GBT26875MessageIntef) {
+        if (evt instanceof IdleEvent) {
             // we forward events for our TckReader to process it
             Session session = sessionManager.getSession(ctx) ;
             Optional<Object> response = reader.readerCallback(session, evt);
