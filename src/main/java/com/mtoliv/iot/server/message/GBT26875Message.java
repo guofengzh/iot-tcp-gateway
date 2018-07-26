@@ -304,14 +304,12 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         out.writeByte(getCmd()) ;
 
         // 应用数据单元,(最大1024字节)
-        long payloadCheckSum = 0 ;
         if (payload != null ) {
-            payloadCheckSum = payload.getCrc() ;
             payload.toByteBuffer(out);
         }
 
         // 校验和, (1字节)
-        out.writeByte((byte)(this.getCrc() + payloadCheckSum ) ) ;
+        out.writeByte((byte)(this.getCrc())) ;
 
         // 结束符‘##，(2字节), 固定值35，35
         out.writeIntLE(TERMINATOR) ;
