@@ -3,7 +3,7 @@ package com.mtoliv.iot.server.message.payLoad.downstream;
 import com.mtoliv.iot.server.message.payLoad.PayloadObject;
 import io.netty.buffer.ByteBuf;
 
-public class FC90XingXiChuanFuZhuangZhiShiJiang extends PayloadObject {
+public class FC90XingXiChuanFuZhuangZhiShiJian extends PayloadObject {
     // 6字节
     private int second ;
     private int minute ;
@@ -62,7 +62,7 @@ public class FC90XingXiChuanFuZhuangZhiShiJiang extends PayloadObject {
 
     @Override
     public String toString() {
-        return "FC90XingXiChuanFuZhuangZhiShiJiang{" +
+        return "FC90XingXiChuanFuZhuangZhiShiJian{" +
                 " second:" + Integer.toHexString(second) +
                 " minute:" + Integer.toHexString(minute) +
                 " hour:" + Integer.toHexString(hour) +

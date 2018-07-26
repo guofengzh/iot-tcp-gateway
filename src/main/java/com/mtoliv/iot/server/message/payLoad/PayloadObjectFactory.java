@@ -1,6 +1,6 @@
 package com.mtoliv.iot.server.message.payLoad;
 
-import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJiang;
+import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJian;
 import com.mtoliv.iot.server.message.payLoad.upstream.FC01XiTongZhuangTai;
 
 public class PayloadObjectFactory {
@@ -14,7 +14,7 @@ public class PayloadObjectFactory {
 
             // 下行
             case PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang:
-                object = new FC90XingXiChuanFuZhuangZhiShiJiang() ;
+                object = new FC90XingXiChuanFuZhuangZhiShiJian() ;
                 break;
 
                 default:

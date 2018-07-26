@@ -8,7 +8,7 @@ import com.mtoliv.iot.server.message.WriterIdleEvent;
 import com.mtoliv.iot.server.message.payLoad.Payload;
 import com.mtoliv.iot.server.message.payLoad.PayloadObjectFactory;
 import com.mtoliv.iot.server.message.payLoad.PayloadObjectTypeFlag;
-import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJiang;
+import com.mtoliv.iot.server.message.payLoad.downstream.FC90XingXiChuanFuZhuangZhiShiJian;
 import com.mtoliv.iot.server.session.Session;
 import com.mtoliv.iot.server.session.SessionManager;
 import com.mtoliv.iot.server.session.listener.LogSessionListener;
@@ -68,8 +68,8 @@ public class AppConfig {
 					// payload
 					Payload payload = new Payload() ;
 					payload.setTypeFlag(PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
-					FC90XingXiChuanFuZhuangZhiShiJiang payloadObject =
-							(FC90XingXiChuanFuZhuangZhiShiJiang)PayloadObjectFactory.createPayloadObject(payload, PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
+					FC90XingXiChuanFuZhuangZhiShiJian payloadObject =
+							(FC90XingXiChuanFuZhuangZhiShiJian)PayloadObjectFactory.createPayloadObject(payload, PayloadObjectTypeFlag.FC90XingXiChuanFuZhuangZhiShiJiang);
 					payloadObject.setSecond(1);
 					payload.addPayloadObject(payloadObject);
 					response.setPayload(payload);
