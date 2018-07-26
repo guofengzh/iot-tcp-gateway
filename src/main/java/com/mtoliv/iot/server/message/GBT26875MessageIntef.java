@@ -27,8 +27,8 @@ public interface GBT26875MessageIntef extends Serializable {
 
     default void setLong6Byte(ByteBuf out, long value) {
         out.writeIntLE((int)value) ;
-        byte highend = (byte)(value >> 32) ;
-        out.writeByte(highend) ;
+        int highend = (int) (value >> 32) ;
+        out.writeShortLE(highend) ;
     }
 
     /** 这个操作对Payload或PayloadObject没有用 - 再处理 */

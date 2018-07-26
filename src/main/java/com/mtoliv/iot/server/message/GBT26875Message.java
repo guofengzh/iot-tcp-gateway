@@ -278,8 +278,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         out.writeShortLE(getSeqNo()) ;
 
         // 协议版本,(2字节)
-        out.writeShortLE(getMajor()) ;
-        out.writeShortLE(getMinor()) ;
+        out.writeByte(getMajor()) ;
+        out.writeByte(getMinor()) ;
 
         // 时间标签, (6字节)
         out.writeByte(getSecond()) ;
@@ -298,6 +298,8 @@ public class GBT26875Message implements GBT26875MessageIntef, Serializable {
         // 应用数据单元长,(2字节)
         if (payload != null ) {
             out.writeShortLE(payload.getDataLengthInBytes()) ;
+        } else {
+            out.writeShortLE(0) ;
         }
 
         // 命令字节, (1字节)
